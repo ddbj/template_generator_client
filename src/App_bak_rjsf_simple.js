@@ -11,10 +11,7 @@ function App() {
   const [fetch_schema, setSchema] = useState(null);
 
     const fetchData = async () => {
-      //const response = await fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/ddbj_submission_dev1.json');
-      const response = await fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/submission_category.json');
-      //const response = await fetch('shemas/example_shcema_minimum.json');
-
+      const response = await fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/ddbj_submission_dev1.json');
       const jsonData = await response.json();
       setSchema(jsonData);
     };
