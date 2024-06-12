@@ -1,9 +1,24 @@
 # template_generator_client
 
-React JSONSchema formを利用して
-"ddbj_submission_dev1.json"を表示します
+- react-jsonschema-formを利用して"ddbj_submission_dev1.json"を表示します
+- 現状はミニマルなjsonschema formの表示のみ
 
-## JSONSchema
+## デプロイ方法
 
-if~thenが正しく表示されるJSONSchemaの例を[schmas/example_schema_minimum_test.json
+- git clone <レポジトリ>
+- cd <レポジトリ>
+- docker build -t react-app .
+- docker run -d -p 3000:80 react-app
+
+
+## JSONSchemaでif~thenを記述する際のtips
+
+if thenが正しく表示されるサンプルのJSONSchemaを
+
+[schmas/example_schema_minimum_test.json
 ](https://github.com/ddbj/template_generator_client/blob/main/schemas/example_schema_minimum_test.json)に置きました
+
+if thenを利用したschemaを記述する場合以下のように属性を記述します
+- ルートのpropertiesにはif thenに記述する項目は含めない（この場合この属性のレンダリングは既存の属性の最後に追加される）
+- propertiesに空の属性のみ記述する
+  
