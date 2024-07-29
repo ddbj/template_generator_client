@@ -40,7 +40,7 @@
             "description": "Full name of the contact person. Must be one of the submitters."
         },
         "form1": {
-            "title": "test properties",
+            "title": "form 1",
             "type":"string",
             "enum": ["abc", "def", "ghi"],
             "enumNames":["abc: abc is ..", "def: def is ..", "ghi: ghi is .."]
@@ -48,18 +48,24 @@
         "form2": {
             "type": "string",
             "oneOf": [
-              { "title": "value1: abc ..", "const": "value1", "description": "abd" }, 
-              { "title": "value2: def  ..", "const": "value2", "description": "def" }
+              { "title": "value1: (abc ..)", "const": "value1", "description": "abd" }, 
+              { "title": "value2: (def  ..)", "const": "value2", "description": "def" }
             ]
           },
         "form3": {
-        "title": "custom field",
-        "type": "string",
-        "enum": ["abc", "def", "ghi"],
-        "enumNames":["abc: abc is ..", "def: def is ..", "ghi: ghi is .."],
-        "description": "test field"  
+            "title": "custom field",
+            "type": "string",
+            "enum": ["abc", "def", "ghi"],
+            "enumNames":["abc: abc is ..", "def: def is ..", "ghi: ghi is .."],
+            "description": "form 3"  
 
-        }
+        },
+        "form4": {
+            "title": "custom widget",
+            "type": "string",
+            "enum": ["abc", "def", "ghi"],
+            "enumNames":["abc: abc is ..", "def: def is ..", "ghi: ghi is .."]
+          }
     },
 
     "required": ["data_type", "contact"],

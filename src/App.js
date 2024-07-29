@@ -15,7 +15,8 @@ function App() {
 useEffect(() => {
     //fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/ddbj_submission_dev1.json')
     //fetch('https://raw.githubusercontent.com/ddbj/template_generator_client/main/schemas/example_schema_minimum_test.json')
-    fetch('test.json')
+    fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/MSS_COMMON_template.json')
+    //fetch('test.json')
     .then(res => res.json())
     .then(data => {
         setSchema(data);
@@ -31,12 +32,15 @@ useEffect(() => {
     },
     form3: {
       "ui:FieldTemplate": CustomFieldTemplate
+    },
+    form4: {
+      "ui:widget": MyCustomWidget
     }
+
   };
 
 
   function CustomFieldTemplate(props) {
-    console.log("props: ", props)
     const {id, classNames, label, help, required, description, errors, children} = props;
     return (
       <div className={classNames}>
@@ -48,6 +52,21 @@ useEffect(() => {
       </div>
     );
   }
+
+  function MyCustomWidget(props) {
+    const {options} = props;
+    const {color, backgroundColor} = options;
+    const {id, classNames, label, help, required, description, errors, children} = props;
+    console.log("chi: ", {children})
+    return (
+      <div className={classNames}>
+        <label htmlFor={id}>{label}{required ? "*" : null}</label>
+        {description}
+        {children}
+
+    </div>
+  );
+  }i:
 
 
   
@@ -62,7 +81,7 @@ useEffect(() => {
                 formData={data}
                 onChange={(e) => {
                   const { formData } = e
-                  console.log(formData.form2)
+                  console.log(formData.form3,  formData, e)
                 }}
             >
             </Form>
