@@ -7,8 +7,10 @@
 
 - git clone <レポジトリ>
 - cd <レポジトリ>
-- docker build -t react-app .
+- docker build -t react-app .  
 - docker run -d -p 3000:80 react-app
+
+### ec2インスタンスではbyobuに入ってbuildを実行するとなぜか上手くいった
 
 
 ## JSONSchemaでif~thenを記述する際のtips
