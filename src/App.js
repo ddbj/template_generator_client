@@ -5,11 +5,13 @@ import Form from '@rjsf/mui';
 //import { RJSFSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 //import CSVReader from 'react-csv';
 
 
 
 function App() {
+  // 初期値nullで、fetch_schemaに更新関数setSchemaで値をセットする
   const [fetch_schema, setSchema] = useState(null);
 
   // const [data, setData] = useState(null)
@@ -17,8 +19,8 @@ function App() {
   useEffect(() => {
     //fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/ddbj_submission_dev1.json')
     //fetch('https://raw.githubusercontent.com/ddbj/template_generator_client/main/schemas/example_schema_minimum_test.json')
-    //fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/MSS_COMMON_template.json')
-    fetch('test.json')
+    fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/MSS_COMMON_template.json')
+    //fetch('test.json')
     .then(res => res.json())
     .then(data => {
         setSchema(data);
@@ -69,8 +71,9 @@ function App() {
   // }
 
   function CsvTable(json) {
-    console.log(json)
-    // const [data, setData] = useState([]);
+    console.log("CsvTable", json)
+    // 
+    //const [csv_data, setData] = useState([]);
   
     // const handleForce = (data, errors) => {
     //   if (errors) {
@@ -79,9 +82,31 @@ function App() {
     //     setData(data);
     //   }
     // };
-  
     const data = createCommon(json);
-    console.log(data)
+    console.log("CsvTable CreateCommon", data)
+    const columns = ['Entry', 'Feature', 'Location', 'Qualifier','Value'];
+    const MssTableThead = styled.thead`
+      background-color: #5c7aa4;
+      min-width: 400px;
+      color: #ffffff;
+      text-align: left;
+      ;  `
+    const MssTableTh = styled.th`
+        min-width: 80px;
+        border:1px solid #cccccc;
+        padding: 0 6px 0 4px;
+    `
+    const MssTableTr = styled.tr`
+      border-bottom: 1px solid #dddddd;
+      ＆tr:nth-of-type(even) {
+          background-color: #f3f3f3;
+      }
+    `;
+    const MssBodyTd = styled.td`
+      border:1px solid #cccccc;
+      min-width: 60px;
+      padding: 0 10px 0 2px;
+    `
 
     return (
       <div>
@@ -90,19 +115,32 @@ function App() {
           label="Select CSV"
           onFileLoaded={handleForce}
         /> */}
-        {/* <table>
-          <thead>
+
+        {<table
+          className="mss_table"
+        >
+          <MssTableThead>
             <tr>
-              {data.length > 0 ? data[0].map((head, index) => <th key={index}>{head}</th>) : null}
+              {columns.map((column, index) => (
+                <MssTableTh key={index}>{column}</MssTableTh>
+              ))}
             </tr>
-          </thead>
+          </MssTableThead>
           <tbody>
-            {data.length > 0 ? data.slice(1).map((row, i) => <tr key={i}>
-              {row.map((cell, j) => <td key={j}>{cell}</td>)}
-            </tr>) : null}
+            
+            {data.slice(0,32).map((row, index)=>(
+              // row, indexを渡せない？
+              <MssTableTr>
+                
+                {row.map((cell, cellIndex) => (
+                  <MssBodyTd key={cellIndex}>{cell}</MssBodyTd>
+                ))}
+
+              </MssTableTr>
+            ))}
+
           </tbody>
-        </table> */}
-      blank
+        </table> }
       </div>
     );
   }
@@ -123,6 +161,8 @@ function App() {
                 onChange={(e) => {
                   const { formData } = e
                   console.log(formData, e)
+                  // setSchema(formData)することで、フォームの内容が更新されるとfetch_schemaに反映される
+                  setSchema(formData)
                 }}
             >
             </Form>
@@ -136,17 +176,13 @@ function App() {
         </div>
 
       </div>
-        
-
-      
     </div>
 
     
   );
 }
 
-// 谷澤さんのコード
-
+// 谷澤さんのjson2csvコード
 function createQualifier(qualifierKey, value) {
     const ret = [];
     if (Array.isArray(value)) { // For array data
@@ -192,8 +228,6 @@ function createCommon(commonJson) {
     }
     return ret;
 }
-
-
 
 // 谷澤さんのコードここまで
 
