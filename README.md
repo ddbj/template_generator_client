@@ -24,3 +24,10 @@ if thenを利用したschemaを記述する場合以下のように属性を記�
 - ルートのpropertiesにはif thenに記述する項目は含めない（この場合この属性のレンダリングは既存の属性の最後に追加される）
 - propertiesに空の属性のみ記述する
   
+## アプリケーションをアップデートする場合
+
+- docker stop <container id>
+- 更新処理
+- cd <ローカルレポジトリ>
+- docker build -t react-app .
+- docker run -d -p 3000:80 react-app
