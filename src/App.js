@@ -154,10 +154,11 @@ function App() {
 // json preview handler
 function JsonViewer({ data }) {
   const MssJsonPreview = styled.div`
-  min-width: 80px;
+  width: 100%;
+  min-width: 400px;
   border:1px solid #cccccc;
-  padding: 0 12px 0 4px;
-  margin: 12px 0 0 16px;
+  padding: 0 0 0 4px;
+  margin: 12px 16px 0 16px;
   font-size: 1rem;
 `
   return (
