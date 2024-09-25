@@ -108,8 +108,6 @@ function App() {
       </div>
     );
   }
-
-
   
   return (
     <div className='app_container'>
@@ -145,10 +143,29 @@ function App() {
         <div class="table_containr">
           {form_data ? CsvTable(form_data): "loading..."}
         </div>
+        <div>
+          <JsonViewer data={form_data} />
+        </div>
       </div>
     </div>
+  );
+}
 
-    
+// json preview handler
+function JsonViewer({ data }) {
+  const MssJsonPreview = styled.div`
+  min-width: 80px;
+  border:1px solid #cccccc;
+  padding: 0 12px 0 4px;
+  margin: 12px 0 0 16px;
+  font-size: 1rem;
+`
+  return (
+    <MssJsonPreview>
+      <pre>
+        {JSON.stringify(data, null, 2)}
+      </pre>
+    </MssJsonPreview>
   );
 }
 
