@@ -1,23 +1,17 @@
-//import logo from './logo.svg';
 import './App.css';
-
 import Form from '@rjsf/mui';
-//import { RJSFSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-//import CSVReader from 'react-csv';
-
 
 
 function App() {
-  // 初期値nullで、fetch_schemaに更新関数setSchemaで値をセットする
+  // fetch_schemaは初期値nullで、setShema関数で値をsetされサイレンダリングがトリガされる
   const [fetch_schema, setSchema] = useState(null);
-
-  // const [data, setData] = useState(null)
+  //  csvTable(form_data)を再レンダリングするためのstate。formのonChangeでsetDataが呼ばれれる。
+  const [form_data, setData] = useState(null)
 
   useEffect(() => {
-    //fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/ddbj_submission_dev1.json')
     fetch('https://raw.githubusercontent.com/ddbj/template_generator_api/main/src/dev_schemas/MSS_COMMON_template.json')
     //fetch('test.json')
     .then(res => res.json())
@@ -26,19 +20,12 @@ function App() {
     })
   }, []);
 
-
   const uiSchema = {
     data_type: {
       "ui:help": (
         <div style={{'fontSize':'1rem'}}>See dfast's <a href="https://dfast.ddbj.nig.ac.jp/">original website</a> for more information.</div>
       )
     },
-    // form3: {
-    //   "ui:FieldTemplate": CustomFieldTemplate
-    // },
-    // form4: {
-    //   "ui:widget": MyCustomWidget
-    // }
   };
 
 
@@ -55,34 +42,16 @@ function App() {
     );
   }
 
-  // function MyCustomWidget(props) {
-  //   const {options} = props;
-  //   const {color, backgroundColor} = options;
-  //   const {id, classNames, label, help, required, description, errors, children} = props;
-  //   console.log("chi: ", {children})
-  //   return (
-  //     <div className={classNames}>
-  //       <label htmlFor={id}>{label}{required ? "*" : null}</label>
-  //       {description}
-  //       {children}
-  //     </div>
-  //   );
-  // }
-
   function CsvTable(json) {
-    console.log("CsvTable", json)
-    // 
-    //const [csv_data, setData] = useState([]);
-  
-    // const handleForce = (data, errors) => {
-    //   if (errors) {
-    //     console.error(errors);
-    //   } else {
-    //     setData(data);
-    //   }
-    // };
-    const data = createCommon(json);
-    console.log("CsvTable CreateCommon", data)
+    console.log("created json", json)
+    // title, type, properties, definitionsがformDataに付加されるので削除
+    delete json.title
+    delete json.type
+    delete json.properties
+    delete json.definitions
+    delete json.allOf
+    const table_data = createCommon(json);
+    console.log("created data", table_data)
     const columns = ['Entry', 'Feature', 'Location', 'Qualifier','Value'];
     const MssTableThead = styled.thead`
       background-color: #5c7aa4;
@@ -108,12 +77,8 @@ function App() {
     `
 
     return (
+      // table生成
       <div>
-        {/* <CSVReader
-          cssClass="csv-reader"
-          label="Select CSV"
-          onFileLoaded={handleForce}
-        /> */}
 
         {<table
           className="mss_table"
@@ -127,7 +92,8 @@ function App() {
           </MssTableThead>
           <tbody>
             
-            {data.slice(0,32).map((row, index)=>(
+            {table_data.map((row, index)=>(
+              
               // row, indexを渡せない？
               <MssTableTr>
                 
@@ -158,12 +124,19 @@ function App() {
                 CustomFieldTemplate = {CustomFieldTemplate}
                 formData={fetch_schema}
                 onChange={(e) => {
-                  const { formData } = e
-                  console.log(formData, e)
+                  const form_value  = e
+                  // 直しjavascriptの仕様的には{key}なので {formData}==e.formDataなはず
+                  console.log("form_value", form_value)
                   // setSchema(formData)することで、フォームの内容が更新されるとfetch_schemaに反映される
-                  setSchema(formData)
+                  setData(form_value.formData)
+                }}
+                onSubmit={(e) => {
+                  handleDownload(e.formData)
                 }}
             >
+              <div>   
+              <button type="submit" variant="contained" color="primary">Download Template</button>
+              </div>
             </Form>
         :
         <p>loading...</p>
@@ -171,9 +144,8 @@ function App() {
       </div>
       <div style={{display: 'inline-block', width: '49%', verticalAlign: 'top'}}>
         <div class="table_containr">
-          {fetch_schema ? CsvTable(fetch_schema): "loading..."}
+          {form_data ? CsvTable(form_data): "loading..."}
         </div>
-
       </div>
     </div>
 
@@ -181,7 +153,27 @@ function App() {
   );
 }
 
-// 谷澤さんのjson2csvコード
+
+// csv download handler
+const handleDownload = (d) => {
+  let newCsvString = convertToCSV(d);
+  newCsvString = "Entry,Feature,Location,Qualifier,Value\n" + newCsvString;
+
+  const blob = new Blob([newCsvString], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'mss_common_template.csv';
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
+const convertToCSV = (data) => {
+  const dl_data = createCommon(data)
+  console.log("data", data) 
+  return dl_data.map(row => row.join(',')).join('\n');
+};
+
+// json2csv
 function createQualifier(qualifierKey, value) {
     const ret = [];
     if (Array.isArray(value)) { // For array data
@@ -227,8 +219,7 @@ function createCommon(commonJson) {
     }
     return ret;
 }
-
-// 谷澤さんのコードここまで
+// json2csv変換コードここまで
 
 
 export default App;
