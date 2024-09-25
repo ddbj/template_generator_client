@@ -28,7 +28,6 @@ function App() {
     },
   };
 
-
   function CustomFieldTemplate(props) {
     const {id, classNames, label, help, required, description, errors, children} = props;
     return (
